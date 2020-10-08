@@ -1,1 +1,30 @@
+language: cpp
+os: linux
+compiler: gcc
 
+addons:
+    apt:
+        packages:
+            - cmake
+            - valgrind
+
+env:
+    - DIR=iz_1
+
+install:
+    - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
+    
+before_script:
+    - cd $DIR
+    - cmake .
+    - make
+    - ls
+
+script:
+    - --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no
+
+after_script:
+    - make clean
