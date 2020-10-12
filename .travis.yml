@@ -12,6 +12,7 @@ env:
     - DIR=iz_1
 
 install:
+    - ls
     - cd /iz_1
     - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
     - sudo make
