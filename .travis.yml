@@ -13,7 +13,7 @@ env:
 
 install:
     - ls
-    - cd /usr/src
+    - cd /usr/src/gtest
     - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
     - sudo make
     - sudo cp *.a /iz_1
