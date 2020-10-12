@@ -12,10 +12,10 @@ env:
     - DIR=iz_1
 
 install:
-    - cd /usr/src/gtest
+    - cd /iz_1
     - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
     - sudo make
-    - sudo cp *.a /usr/lib
+    - sudo cp *.a /iz_1
     - cd -
     
 before_script:
