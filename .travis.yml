@@ -12,6 +12,7 @@ env:
     - DIR=iz_1
 
 install:
+    - cd /usr/src/gtest
     - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
     - sudo make
     - sudo cp *.a /usr/lib
@@ -24,7 +25,8 @@ before_script:
     - ls
 
 script:
-    - --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no
+    - valgrind --leak-check=full -q ./untitled < test.txt
+    - ./untitled
 
 after_script:
     - make clean
