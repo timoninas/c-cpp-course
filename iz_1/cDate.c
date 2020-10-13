@@ -8,6 +8,7 @@ cDate* sort(cDate* dates, const int number_of_elements, const int buffer_size) {
             dates[j]=tmp;
         }
     }
+    return dates;
 }
 
 cDate* fill_cDate(cDate *date, uint day, uint month, uint year) {
