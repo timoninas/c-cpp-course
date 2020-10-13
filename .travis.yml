@@ -2,31 +2,34 @@ language: c
 os: linux
 compiler: gcc
 
-addons:
-    apt:
-        packages:
-            - cmake
-            - valgrind
 
 env:
     - DIR=iz_1
 
 install:
+    - sudo apt-get update
+    - sudo apt-get install valgrind
+    - sudo apt-get install cppcheck
+    - sudo apt-get install cmake
+    - sudo apt-get install lcov
+    - sudo apt-get install libgtest-dev
+    - cd /usr/src/gtest
+    - sudo cmake CMakeLists.txt
+    - sudo make
+    - sudo cp *.a /usr/lib
+    - cd -
+    
+before_script:
     - cd $DIR
     - mkdir build
     - cd build
     - cmake ..
-    - cmake --build .
-    
-before_script:
-    - cd $DIR
-    - cmake .
-    - make
-    - ls
 
 script:
-    - valgrind --leak-check=full -q ./untitled.a < test.txt
-    - ./untitled.a
+    - make main.out
+    - make test.out
+    - valgrind --leak-check=full -q ./main.out < test.txt
+    - ./test.out
 
 after_script:
     - make clean
