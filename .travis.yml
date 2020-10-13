@@ -28,7 +28,7 @@ before_script:
 script:
     - make main.out
     - make test.out
-    - valgrind --leak-check=full -q ./main.out < test.txt
+    - valgrind --leak-check=full -q ./main.out
     - ./test.out
 
 after_script:
