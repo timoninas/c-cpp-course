@@ -12,12 +12,10 @@ env:
     - DIR=iz_1
 
 install:
-    - ls
-    - cd /usr/src/
-    - sudo cmake CMakeLists.txt || (cat CMakeFiles/CMakeError.log && CMakeFiles/CMakeOutput.log)
-    - sudo make
-    - sudo cp *.a /iz_1
-    - cd -
+    - mkdir build
+    - cd build
+    - cmake ..
+    - cmake --build .
     
 before_script:
     - cd $DIR
