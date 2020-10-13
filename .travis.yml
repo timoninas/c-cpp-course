@@ -12,6 +12,7 @@ env:
     - DIR=iz_1
 
 install:
+    - cd $DIR
     - mkdir build
     - cd build
     - cmake ..
