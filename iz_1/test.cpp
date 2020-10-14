@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "cDate.h"
+#include "date.h"
 }
 
 TEST(check_valid_date, valid_date)
 {
     // Arrange
-    cDate date = {29, 2, 2020};
+    date_t date = {29, 2, 2020};
 
     // Act
     int res = check_valid_date(date);
@@ -19,7 +19,7 @@ TEST(check_valid_date, valid_date)
 TEST(check_valid_date, not_valid_date)
 {
     // Arrange
-    cDate date = {29, 2, 2021};
+    date_t date = {29, 2, 2021};
 
     // Act
     int res = check_valid_date(date);
@@ -31,8 +31,8 @@ TEST(check_valid_date, not_valid_date)
 TEST(test_greater_date, greater)
 {
     // Arrange
-    cDate date1 = {29, 2, 2021};
-    cDate date2 = {11, 2, 2021};
+    date_t date1 = {29, 2, 2021};
+    date_t date2 = {11, 2, 2021};
 
     // Act
     int res = greater_date(date1, date2);
@@ -42,29 +42,34 @@ TEST(test_greater_date, greater)
     //EXPECT_FALSE(ltr.sender == NULL);
 }
 
-TEST(test_greater_date, not_greater)
-{
-    // Arrange
-    cDate date1 = {29, 2, 2021};
-    cDate date2 = {11, 2, 2021};
-
-    // Act
-    int res = greater_date(date2, date1);
-
-    // Assert
-    EXPECT_EQ(res, -1);
-}
-
 TEST(test_greater_date, equal_date)
 {
     // Arrange
-    cDate date = {29, 2, 2021};
+    date_t date = {29, 2, 2021};
 
     // Act
     int res = greater_date(date, date);
 
     // Assert
-    EXPECT_FALSE(res != 0);
+    EXPECT_EQ(res, 0);
+}
+
+TEST(test_swipe, swipe_values)
+{
+    // Arrange
+    date_t date1 = {29, 2, 2021};
+    date_t date2 = {11, 2, 2021};
+    date_t tmp_date1 = {29, 2, 2021};
+    date_t tmp_date2 = {11, 2, 2021};
+
+    // Act
+    swipe_date(&date1, &date2);
+    int res1 = greater_date(date1, tmp_date2);
+    int res2 = greater_date(date2, tmp_date1);
+
+    // Assert
+    EXPECT_EQ(res1, 0);
+    EXPECT_EQ(res2, 0);
 }
 
 TEST(test_sort, compare_sorted_arr)
@@ -72,17 +77,17 @@ TEST(test_sort, compare_sorted_arr)
     // Arrange
     int curr_num_dates = 0;
     int buff_dates = 1;
-    cDate* dates = (cDate*)malloc(sizeof(cDate) * buff_dates);
+    date_t* dates = (date_t*)malloc(sizeof(date_t) * buff_dates);
 
     int curr_num_sort_dates = 0;
     int buff_sort_dates = 1;
-    cDate* sort_dates = (cDate*)malloc(sizeof(cDate) * buff_sort_dates);
+    date_t* sort_dates = (date_t*)malloc(sizeof(date_t) * buff_sort_dates);
 
-    cDate date1, date2, date3, date4;
-    fill_cDate(&date1, 28, 12, 1984);
-    fill_cDate(&date2, 27, 12, 1984);
-    fill_cDate(&date3, 26, 1, 1984);
-    fill_cDate(&date4, 26, 1, 1980);
+    date_t date1, date2, date3, date4;
+    fill_date(&date1, 28, 12, 1984);
+    fill_date(&date2, 27, 12, 1984);
+    fill_date(&date3, 26, 1, 1984);
+    fill_date(&date4, 26, 1, 1980);
 
     // Dates in sorted order
 
