@@ -12,44 +12,34 @@
 #define ERR_DATA -2
 
 int main(int argc, const char * argv[]) {
-    int count;
-    printf("Input count of days: ");
-    scanf("%d", &count);
-
-    if (count < 1) {
-        printf("Incorrect size input\n");
-        return ERR_COUNT;
-    }
-
     int curr_num_dates = 0;
     int buff_dates = 1;
     date_t* dates = (date_t*)malloc(sizeof(date_t) * buff_dates);
 
-    for (int i = 0; i < count; i++) {
-        int day, month, year;
-        printf("\nInput day in format dd.mm.yyyy: ");
+    date_t date1, date2, date3, date4;
+    fill_date(&date1, 1, 5, 1999);
+    fill_date(&date2, 2, 6, 1998);
+    fill_date(&date3, 3, 7, 1997);
+    fill_date(&date4, 4, 8, 1996);
 
-        if (scanf("%d.%d.%d", &day, &month, &year) == 3) {
-            date_t date = {day, month, year};
-            if (check_valid_date(date) == 0) {
-                printf("Incorrect data input\n");
-                free(dates);
-                return ERR_DATA;
-            }
-            dates = add_date(dates, date, &curr_num_dates, &buff_dates);
-        } else {
-            printf("Incorrect data input\n");
-            free(dates);
-            return ERR_DATA;
-        }
+    dates = add_date(dates, date1, &curr_num_dates, &buff_dates);
+    dates = add_date(dates, date2, &curr_num_dates, &buff_dates);
+    dates = add_date(dates, date3, &curr_num_dates, &buff_dates);
+    dates = add_date(dates, date4, &curr_num_dates, &buff_dates);
+
+    printf("Before sort:\n");
+    for (int i = 0; i < curr_num_dates; i++) {
+        print_date(dates[i]);
     }
 
     dates = sort(dates, curr_num_dates, buff_dates);
 
-    printf("\nSorted dates:\n");
+    printf("\nAfter sort:\n");
     for (int i = 0; i < curr_num_dates; i++) {
         print_date(dates[i]);
     }
+
+    free(dates);
 
     return 0;
 }
