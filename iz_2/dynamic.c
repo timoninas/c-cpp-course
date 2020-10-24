@@ -42,9 +42,12 @@ char* find_sequence_multi(const char* array, const size_t* size) {
             close(fd[i][0]);
             write(fd[i][1], &point, sizeof(Point));
             close(fd[i][1]);
+            free(position_quotes);
             exit(rc);
         }
     }
+    
+    free(position_quotes);
 
     // поиск позиции максимальной последовательности
     int status = 0;
@@ -53,7 +56,6 @@ char* find_sequence_multi(const char* array, const size_t* size) {
     {
         wait(&status);
         if (!WIFEXITED(status)) {
-            free(position_quotes);
             return ERROR_PROCCESS;
         }
 
@@ -67,7 +69,6 @@ char* find_sequence_multi(const char* array, const size_t* size) {
     }
 
     if (result_point.start == -1 || result_point.end == -1) {
-        free(position_quotes);
         return ERROR_NOT_FOUND_SEQUENCE;
     }
 
@@ -77,8 +78,6 @@ char* find_sequence_multi(const char* array, const size_t* size) {
     for (int i = result_point.start; i <= result_point.end; i++) {
         result_sequence[k++] = array[i];
     }
-
-    free(position_quotes);
     result_sequence[length + 1] = '\0';
 
     return result_sequence;
@@ -138,4 +137,3 @@ int is_upper_multi(char symb) {
         return 0;
     }
 }
-
