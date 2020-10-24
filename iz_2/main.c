@@ -107,6 +107,7 @@ void tests() {
         assert(finded_sequence == ERROR_NOT_FOUND_SEQUENCE);
 
         free(file_content);
+        free(finded_sequence);
     }
     {
         // Arrange
@@ -146,6 +147,8 @@ void tests() {
 
         //free
         free(file_content);
+        free(finded_sequence);
+        free(finded_sequence_multi);
     }
 }
 
@@ -163,7 +166,7 @@ int main(int argc, const char * argv[]) {
         return ERROR_OPEN_FILE;
     }
 
-    char* file_content = (char*) malloc(sizeof(char*) * size);
+    char* file_content = (char*) malloc(sizeof(char) * size);
     if (file_content == NULL) {
         printf(ERROR_ALLOCATE_MEMORY_MSG);
         return -1;
@@ -187,10 +190,12 @@ int main(int argc, const char * argv[]) {
             printf("\n");
         }
     }
-
-    char* result = malloc(sizeof(char*)*5);
+    
+    free(finded_sequence);
 
     char* finded_sequence_multi = find_sequence_multi(file_content, &size);
+
+    free(file_content);
 
     if (finded_sequence_multi == NULL) {
         return -1;
@@ -202,9 +207,7 @@ int main(int argc, const char * argv[]) {
             printf("\n");
         }
     }
-
-    free(result);
-    free(file_content);
-    free(finded_sequence);
+    
+    free(finded_sequence_multi);
     return 0;
 }
