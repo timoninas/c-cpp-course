@@ -18,7 +18,7 @@ add_executable(main.out main.c reader.c reader.h)
 target_link_libraries(main.out _sequental)
 target_link_libraries(main.out _multiproc)
 
-add_executable(test.out test.cpp)
+add_executable(test.out test.cpp reader.c reader.h)
 target_link_libraries(test.out _sequental)
 target_link_libraries(test.out _multiproc)
 target_link_libraries(test.out ${GTEST_LIBRARIES} pthread)
