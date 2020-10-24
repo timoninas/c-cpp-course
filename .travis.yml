@@ -25,6 +25,8 @@ before_script:
     - cmake ..
 
 script:
+    - ls
+    - ls ..
     - make main.out
     - make test.out
     - valgrind --leak-check=full -q ./main.out
