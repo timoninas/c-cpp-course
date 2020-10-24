@@ -17,28 +17,28 @@
 void tests() {
     // TEST READER
     {
-        char* filename = "test_files/file-1.txt";
+        char* filename = "../test_files/file-1.txt";
         size_t rc = read_file_size(filename);
         assert(rc == ERROR_OPEN_FILE);
     }
     {
-        char* filename = "test_files/empty.txt";
+        char* filename = "../test_files/empty.txt";
         size_t rc = read_file_size(filename);
         assert(rc == ERROR_EMPTY_FILE);
     }
     {
-        char* filename = "test_files/empty.txt";
+        char* filename = "../test_files/empty.txt";
         size_t rc = read_file_size(filename);
         assert(rc == ERROR_EMPTY_FILE);
     }
     {
-        char *filename = "test_files/file-1.txt";
+        char *filename = "../test_files/file-1.txt";
         int rc = read_file_data(filename, NULL, 0);
         assert(rc == ERROR_OPEN_FILE);
     }
     {
         // Arrange
-        char* filename = "test_files/test1.txt";
+        char* filename = "../test_files/test1.txt";
         char* expected = "abcdef123\n ";
         size_t size = read_file_size(filename);
         char* file_content = (char*) malloc(sizeof(char) * size);
@@ -56,7 +56,7 @@ void tests() {
     }
     {
         // Arrange
-        char *filename = "test_files/test1.txt";
+        char *filename = "../test_files/test1.txt";
         size_t size = read_file_size(filename);
         char *file_content = (char *) malloc(sizeof(char) * size);
         read_file_data(filename, file_content, &size);
@@ -73,7 +73,7 @@ void tests() {
     }
     {
         // Arrange
-        char* filename = "test_files/test2.txt";
+        char* filename = "../test_files/test2.txt";
         char* expected = "<Ebbb>";
         size_t size = read_file_size(filename);
         char* file_content = (char*) malloc(sizeof(char) * size);
@@ -93,7 +93,7 @@ void tests() {
     }
     {
         // Arrange
-        char *filename = "test_files/test1.txt";
+        char *filename = "../test_files/test1.txt";
         size_t size = read_file_size(filename);
         char *file_content = (char *) malloc(sizeof(char) * size);
         read_file_data(filename, file_content, &size);
@@ -110,7 +110,7 @@ void tests() {
     }
     {
         // Arrange
-        char* filename = "test_files/test2.txt";
+        char* filename = "../test_files/test2.txt";
         char* expected = "<Ebbb>";
         size_t size = read_file_size(filename);
         char* file_content = (char*) malloc(sizeof(char) * size);
@@ -130,7 +130,7 @@ void tests() {
     }
     {
         // Arrange
-        char *filename = "test_files/test4.txt";
+        char *filename = "../test_files/test4.txt";
         size_t size = read_file_size(filename);
         char *file_content = (char *) malloc(sizeof(char) * size);
         read_file_data(filename, file_content, &size);
@@ -152,7 +152,7 @@ void tests() {
 int main(int argc, const char * argv[]) {
     tests();
 
-    char* filename = "test_files/test2.txt";
+    char* filename = "../test_files/test2.txt";
     size_t size = read_file_size(filename);
 
     if (size == 0) {
