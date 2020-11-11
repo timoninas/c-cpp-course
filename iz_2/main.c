@@ -34,6 +34,7 @@ int main(int argc, const char * argv[]) {
     }
     if (read_file_data(filename, file_content, &size) < 0) {
         printf(ERROR_OPEN_FILE_MSG);
+        free(file_content);
         return ERROR_OPEN_FILE;
     }
 
@@ -55,24 +56,26 @@ int main(int argc, const char * argv[]) {
     free(finded_sequence);
 
     void *library = dlopen("lib_multiproc.so", RTLD_LAZY);
-        if (library)
-        {
-            char* (*func)(const char*, size_t) = NULL;
-            *(void **) (&func) = dlsym(library, "find_sequence_multi");
-            char* finded_sequence_multi = func(file_content, size);
-            if (finded_sequence_multi != NULL) {
-                for (int i = 0; finded_sequence_multi[i] != '\0'; i++) {
+    if (library)
+    {
+        char* (*func)(const char*, size_t) = NULL;
+        *(void **) (&func) = dlsym(library, "find_sequence_multi");
+        char* finded_sequence_multi = func(file_content, size);
+        if (finded_sequence_multi != NULL) {
+            for (int i = 0; finded_sequence_multi[i] != '\0'; i++) {
                 printf("%c", finded_sequence_multi[i]);
-                    if (finded_sequence_multi[i+1] == '\0') {
+                if (finded_sequence_multi[i+1] == '\0') {
                     printf("\n");
-                    }
-                }
-                free(finded_sequence_multi);
+                }   
             }
-            dlclose(library);
+            free(finded_sequence_multi);
         }
-        else
-            printf("Error open library\n");
-    
+        dlclose(library);
+    } else {
+        printf("Error open library\n");
+    }
+
+    free(file_content);
+
     return 0;
 }
