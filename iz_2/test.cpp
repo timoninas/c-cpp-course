@@ -62,7 +62,7 @@ TEST(find_sequence, not_found_sequence)
     // Assert
     EXPECT_NE(size, 0);
     EXPECT_EQ(file_content == NULL, 0);
-    EXPECT_EQ(find_sequence(file_content, &size) == NULL, true);
+    EXPECT_EQ(find_sequence(file_content, size) == NULL, true);
     free(file_content);
 }
 
@@ -76,7 +76,7 @@ TEST(find_sequence, sequence)
     read_file_data(filename, file_content, &size);
 
     // Act
-    char* finded_sequence = find_sequence(file_content, &size);
+    char* finded_sequence = find_sequence(file_content, size);
 
     // Assert
     EXPECT_NE(size, 0);
@@ -97,7 +97,7 @@ TEST(find_sequence_multi, not_found_sequence)
      read_file_data(filename, file_content, &size);
 
      // Act
-     char *finded_sequence = find_sequence_multi(file_content, &size);
+     char *finded_sequence = find_sequence_multi(file_content, size);
 
      // Assert
      EXPECT_NE(size, 0);
@@ -118,7 +118,7 @@ TEST(find_sequence_multi, sequence_multi)
      read_file_data(filename, file_content, &size);
 
      // Act
-     char* finded_sequence = find_sequence_multi(file_content, &size);
+     char* finded_sequence = find_sequence_multi(file_content, size);
 
      // Assert
      EXPECT_NE(size, 0);
@@ -139,8 +139,8 @@ TEST(find_sequence, comapre_seq_n_multi)
     read_file_data(filename, file_content, &size);
 
     // Act
-    char *finded_sequence = find_sequence(file_content, &size);
-    char *finded_sequence_multi = find_sequence_multi(file_content, &size);
+    char *finded_sequence = find_sequence(file_content, size);
+    char *finded_sequence_multi = find_sequence_multi(file_content, size);
 
     // Assert
     EXPECT_NE(size, 0);
