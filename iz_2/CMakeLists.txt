@@ -11,14 +11,16 @@ set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -fprofile-arcs -ftest-coverage")
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-add_library(_sequental STATIC static.c )
-add_library(_multiproc SHARED dynamic.c )
+add_library(_sequental STATIC static.c helper_func.c)
+add_library(_multiproc SHARED dynamic.c helper_func.c)
 
 add_executable(main.out main.c reader.c reader.h)
+target_link_libraries(main.out -ldl)
 target_link_libraries(main.out _sequental)
 target_link_libraries(main.out _multiproc)
 
 add_executable(test.out test.cpp reader.c reader.h)
+
 target_link_libraries(test.out _sequental)
 target_link_libraries(test.out _multiproc)
 target_link_libraries(test.out ${GTEST_LIBRARIES} pthread)

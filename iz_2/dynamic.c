@@ -1,8 +1,6 @@
 #include "dynamic.h"
 
-int is_upper_multi(char symb);
-
-char* find_sequence_multi(const char* array, const size_t* size) {
+char* find_sequence_multi(const char* array, size_t size) {
     // поиск позиций закрывающих скобок
     int count_quotes = 0;
     int *position_quotes = find_closed_quotes(array, size, &count_quotes);
@@ -34,16 +32,19 @@ char* find_sequence_multi(const char* array, const size_t* size) {
         int pid = fork();
 
         if (pid == 0) {
-            Point point = {-1, -1};
-            int rc = proccess(array,
+            point_t point = {-1, -1};
+            proccess(array,
                      i == 0 ? 0: position_quotes[start],
-                     i == (count_proc-1) ? *size: position_quotes[end],
+                     i == (count_proc-1) ? size: position_quotes[end],
                      &point);
             close(fd[i][0]);
-            write(fd[i][1], &point, sizeof(Point));
+            write(fd[i][1], &point, sizeof(point_t));
             close(fd[i][1]);
             free(position_quotes);
-            exit(rc);
+            exit(0);
+        } else if (pid < 0) {
+            free(position_quotes);
+            return ERROR_PROCCESS;
         }
     }
     
@@ -51,7 +52,7 @@ char* find_sequence_multi(const char* array, const size_t* size) {
 
     // поиск позиции максимальной последовательности
     int status = 0;
-    Point result_point = {-1, -1};
+    point_t result_point = {-1, -1};
     for (int i = 0; i < count_proc; i++)
     {
         wait(&status);
@@ -59,9 +60,9 @@ char* find_sequence_multi(const char* array, const size_t* size) {
             return ERROR_PROCCESS;
         }
 
-        Point point = {-1, -1};
+        point_t point = {-1, -1};
         close(fd[i][1]);
-        read(fd[i][0], &point, sizeof(Point));
+        read(fd[i][0], &point, sizeof(point_t));
         close(fd[i][0]);
         if ( (point.end - point.start) >= (result_point.end - result_point.start) ) {
             result_point = point;
@@ -73,7 +74,12 @@ char* find_sequence_multi(const char* array, const size_t* size) {
     }
 
     int length = result_point.end - result_point.start;
+
     char* result_sequence = (char*)malloc(sizeof(char) * (length + 2));
+    if (result_sequence == NULL) {
+        return ERROR_ALLOCATE_MEMORY;
+    }
+
     int k = 0;
     for (int i = result_point.start; i <= result_point.end; i++) {
         result_sequence[k++] = array[i];
@@ -83,10 +89,10 @@ char* find_sequence_multi(const char* array, const size_t* size) {
     return result_sequence;
 }
 
-int proccess(const char* array, int start, int end, Point* point) {
+void proccess(const char* array, int start, int end, point_t* point) {
     int tmp_start = -1;
     for (int i = start; i < end; i++) {
-        if (array[i] == '<' && (i+1) < end && is_upper_multi(array[i+1])) {
+        if (array[i] == '<' && (i+1) < end && is_upper(array[i+1])) {
             tmp_start = i;
         } else if (array[i] == '>') {
             if (tmp_start != -1 && (i - tmp_start) >= (point->end - point->start)) {
@@ -98,12 +104,11 @@ int proccess(const char* array, int start, int end, Point* point) {
             }
         }
     }
-    return 0;
 }
 
-int* find_closed_quotes(const char* array, const size_t* size, int* count_quotes) {
+int* find_closed_quotes(const char* array, size_t size, int* count_quotes) {
     int count = 0;
-    for(int i = 0; i < *size; i++) {
+    for(int i = 0; i < size; i++) {
         if (array[i] == '>') {
             count++;
         }
@@ -120,7 +125,7 @@ int* find_closed_quotes(const char* array, const size_t* size, int* count_quotes
     }
 
     int k = 0;
-    for(int i = 0; i < *size; i++) {
+    for(int i = 0; i < size; i++) {
         if (array[i] == '>') {
             res[k++] = i;
         }
@@ -129,12 +134,3 @@ int* find_closed_quotes(const char* array, const size_t* size, int* count_quotes
     *count_quotes = count;
     return res;
 }
-
-int is_upper_multi(char symb) {
-    if ((int) symb >= 65 && (int) symb <= 90) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-

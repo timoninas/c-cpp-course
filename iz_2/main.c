@@ -1,6 +1,7 @@
 
 #include "static.h"
 #include "reader.h"
+#include <dlfcn.h>
 #include "dynamic.h"
 
 
@@ -14,147 +15,7 @@
  начинающейся с буквы латинского алфавита в верхнем регистре.
 */
 
-void tests() {
-    // TEST READER
-    {
-        char* filename = "../test_files/file-1.txt";
-        size_t rc = read_file_size(filename);
-        assert(rc == ERROR_OPEN_FILE);
-    }
-    {
-        char* filename = "../test_files/empty.txt";
-        size_t rc = read_file_size(filename);
-        assert(rc == ERROR_EMPTY_FILE);
-    }
-    {
-        char* filename = "../test_files/empty.txt";
-        size_t rc = read_file_size(filename);
-        assert(rc == ERROR_EMPTY_FILE);
-    }
-    {
-        char *filename = "../test_files/file-1.txt";
-        int rc = read_file_data(filename, NULL, 0);
-        assert(rc == ERROR_OPEN_FILE);
-    }
-    {
-        // Arrange
-        char* filename = "../test_files/test1.txt";
-        char* expected = "abcdef123\n ";
-        size_t size = read_file_size(filename);
-        char* file_content = (char*) malloc(sizeof(char) * size);
-
-        // Act
-        int rc = read_file_data(filename, file_content, &size);
-
-        // Assert
-        assert(size == 10);
-        assert(file_content != NULL);
-        assert(rc == 0);
-        assert(strncmp(file_content, expected, size) == 0);
-
-        free(file_content);
-    }
-    {
-        // Arrange
-        char *filename = "../test_files/test1.txt";
-        size_t size = read_file_size(filename);
-        char *file_content = (char *) malloc(sizeof(char) * size);
-        read_file_data(filename, file_content, &size);
-
-        // Act
-        char *finded_sequence = find_sequence(file_content, &size);
-
-        // Assert
-        assert(size != 0);
-        assert(file_content != NULL);
-        assert(finded_sequence == ERROR_NOT_FOUND_SEQUENCE);
-
-        free(file_content);
-    }
-    {
-        // Arrange
-        char* filename = "../test_files/test2.txt";
-        char* expected = "<Ebbb>";
-        size_t size = read_file_size(filename);
-        char* file_content = (char*) malloc(sizeof(char) * size);
-        read_file_data(filename, file_content, &size);
-
-        // Act
-        char* finded_sequence = find_sequence(file_content, &size);
-
-        // Assert
-        assert(size != 0);
-        assert(file_content != NULL);
-        assert(finded_sequence != NULL);
-        assert(strcmp(expected, finded_sequence) == 0);
-
-        free(file_content);
-        free(finded_sequence);
-    }
-    {
-        // Arrange
-        char *filename = "../test_files/test1.txt";
-        size_t size = read_file_size(filename);
-        char *file_content = (char *) malloc(sizeof(char) * size);
-        read_file_data(filename, file_content, &size);
-
-        // Act
-        char *finded_sequence = find_sequence_multi(file_content, &size);
-
-        // Assert
-        assert(size != 0);
-        assert(file_content != NULL);
-        assert(finded_sequence == ERROR_NOT_FOUND_SEQUENCE);
-
-        free(file_content);
-        free(finded_sequence);
-    }
-    {
-        // Arrange
-        char* filename = "../test_files/test2.txt";
-        char* expected = "<Ebbb>";
-        size_t size = read_file_size(filename);
-        char* file_content = (char*) malloc(sizeof(char) * size);
-        read_file_data(filename, file_content, &size);
-
-        // Act
-        char* finded_sequence = find_sequence_multi(file_content, &size);
-
-        // Assert
-        assert(size != 0);
-        assert(file_content != NULL);
-        assert(finded_sequence != NULL);
-        assert(strcmp(expected, finded_sequence) == 0);
-
-        free(file_content);
-        free(finded_sequence);
-    }
-    {
-        // Arrange
-        char *filename = "../test_files/test4.txt";
-        size_t size = read_file_size(filename);
-        char *file_content = (char *) malloc(sizeof(char) * size);
-        read_file_data(filename, file_content, &size);
-
-        // Act
-        char *finded_sequence = find_sequence(file_content, &size);
-        char *finded_sequence_multi = find_sequence_multi(file_content, &size);
-
-        // Assert
-        assert(size != 0);
-        assert(file_content != NULL);
-        assert(strcmp(finded_sequence, finded_sequence_multi) == 0);
-
-        //free
-        free(file_content);
-        free(finded_sequence);
-        free(finded_sequence_multi);
-    }
-}
-
 int main(int argc, const char * argv[]) {
-    tests();
-
     char* filename = "../test_files/test2.txt";
     size_t size = read_file_size(filename);
 
@@ -176,7 +37,7 @@ int main(int argc, const char * argv[]) {
         return ERROR_OPEN_FILE;
     }
 
-    char* finded_sequence = find_sequence(file_content, &size);
+    char* finded_sequence = find_sequence(file_content, size);
 
     if (finded_sequence == NULL) {
         printf("Not found sequence\n");
@@ -193,21 +54,25 @@ int main(int argc, const char * argv[]) {
     
     free(finded_sequence);
 
-    char* finded_sequence_multi = find_sequence_multi(file_content, &size);
-
-    free(file_content);
-
-    if (finded_sequence_multi == NULL) {
-        return -1;
-    }
-
-    for (int i = 0; finded_sequence_multi[i] != '\0'; i++) {
-        printf("%c", finded_sequence_multi[i]);
-        if (finded_sequence_multi[i+1] == '\0') {
-            printf("\n");
+    void *library = dlopen("lib_multiproc.so", RTLD_LAZY);
+        if (library)
+        {
+            char* (*func)(const char*, size_t) = NULL;
+            *(void **) (&func) = dlsym(library, "find_sequence_multi");
+            char* finded_sequence_multi = func(file_content, size);
+            if (finded_sequence_multi != NULL) {
+                for (int i = 0; finded_sequence_multi[i] != '\0'; i++) {
+                printf("%c", finded_sequence_multi[i]);
+                    if (finded_sequence_multi[i+1] == '\0') {
+                    printf("\n");
+                    }
+                }
+                free(finded_sequence_multi);
+            }
+            dlclose(library);
         }
-    }
+        else
+            printf("Error open library\n");
     
-    free(finded_sequence_multi);
     return 0;
 }

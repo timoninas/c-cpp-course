@@ -1,7 +1,5 @@
 #include "static.h"
 
-int is_upper(char symb);
-
 void print_seq(const char* array, int start, int end) {
     printf("Finded sequence:\n");
     for (int i = start; i <= end; i++) {
@@ -10,14 +8,14 @@ void print_seq(const char* array, int start, int end) {
     printf("\n");
 }
 
-char* find_sequence(char* array, const size_t* size) {
+char* find_sequence(char* array, size_t size) {
     int final_start = 0, start = -1;
     int final_end = 0;
 
-    for (int i = 0; i < *size; i++) {
+    for (int i = 0; i < size; i++) {
         switch (array[i]) {
             case '<':
-                if (i+1 < *size && is_upper(array[i+1])) {
+                if (i+1 < size && is_upper(array[i+1])) {
                     start = i;
                 }
                 break;
@@ -53,12 +51,4 @@ char* find_sequence(char* array, const size_t* size) {
     result[length+1] = '\0';
 
     return result;
-}
-
-int is_upper(char symb) {
-    if ((int) symb >= 65 && (int) symb <= 90) {
-        return 1;
-    } else {
-        return 0;
-    }
 }
