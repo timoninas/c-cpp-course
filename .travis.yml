@@ -2,9 +2,8 @@ language: c
 os: linux
 compiler: gcc
 
-
 env:
-    - DIR=iz_1
+    - DIR=iz_2
 
 install:
     - sudo apt-get update
